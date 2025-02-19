@@ -1,0 +1,9 @@
+.box-element-line {
+    grid-column-gap: 16px;
+    grid-row-gap: 16px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: flex
+;
+}
