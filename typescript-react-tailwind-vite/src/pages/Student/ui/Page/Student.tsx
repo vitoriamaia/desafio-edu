@@ -1,5 +1,5 @@
 import LayoutSidebar from "@/widgets/LayoutSidebar/ui/LayoutSidebar/LayoutSidebar";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -10,15 +10,14 @@ interface Task {
 }
 
 const Student: React.FC = () => {
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState('');
   const [cookies, removeCookie] = useCookies(['jwt']);
   const navigate = useNavigate();
   const [showSubjects, setShowSubjects] = useState(false);
 
-  const handleTitleChange =(e: FormEvent)=>{
-    setTitle(e.target.value)
-
-  }
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
 
   useEffect(() => {
     if (!cookies.jwt) {
@@ -65,7 +64,7 @@ const Student: React.FC = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("clicked");
+    addTask();
   };
 
   return (
@@ -82,19 +81,44 @@ const Student: React.FC = () => {
         <section className="bg-white p-6 rounded-lg shadow-lg flex w-3/4 max-w-4xl">
           <div className="box-element-line w-1/2 p-4">
             <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="title"
-              className="text-input mb-2 p-2 border rounded w-full"
-              value={title}
-              onChange={handleTitleChange}
-              placeholder="Titulo"
-            />
+              <input
+                type="text"
+                name="title"
+                className="text-input mb-2 p-2 border rounded w-full"
+                value={title}
+                onChange={handleTitleChange}
+                placeholder="Titulo"
+              />
               <button className="btn-primary btn w-full mt-4" type="submit">
                 Adicionar
               </button>
             </form>
           </div>
+        </section>
+        <section>
+          <h2>📋 Tarefas</h2>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Nova tarefa"
+          />
+          <button onClick={addTask}>Adicionar Tarefa</button>
+          <ul>
+            {tasks.map((task) => (
+              <li key={task.id}>
+                <span
+                  style={{
+                    textDecoration: task.completed ? "line-through" : "none",
+                  }}
+                  onClick={() => toggleTask(task.id)}
+                >
+                  {task.text}
+                </span>
+                <button onClick={() => removeTask(task.id)}>Remover</button>
+              </li>
+            ))}
+          </ul>
         </section>
       </div>
     </div>

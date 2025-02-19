@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 
 interface LayoutSidebarProps {
   showSubjects: boolean;
@@ -21,13 +21,13 @@ const LayoutSidebar: FC<LayoutSidebarProps> = ({ showSubjects, handleShowSubject
           <ul style={{ listStyle: "none", padding: 0, marginTop: "10px" }}>
             <li style={{ margin: "5px 0" }}>Matemática</li>
             <li style={{ margin: "5px 0" }}><a onClick={() => navigate('/disciplinas/biologia')}>Biologia</a></li>
-            <li style={{ margin: "5px 0" }}>Física</li>
-            <li style={{ margin: "5px 0" }}>Português</li>
-            <li style={{ margin: "5px 0" }}>História</li>
-            <li style={{ margin: "5px 0" }}>Sociologia</li>
-            <li style={{ margin: "5px 0" }}>Química</li>
-            <li style={{ margin: "5px 0" }}>Geografia</li>
-            <li style={{ margin: "5px 0" }}>Filosofia</li>
+            <li style={{ margin: "5px 0" }}><a onClick={() => navigate('/disciplinas/fisica')}>Fisica</a></li>
+            <li style={{ margin: "5px 0" }}><a onClick={() => navigate('/disciplinas/matematica')}>Matematica</a></li>
+            <li style={{ margin: "5px 0" }}><a onClick={() => navigate('/disciplinas/historia')}>Historia</a></li>
+            <li style={{ margin: "5px 0" }}><a onClick={() => navigate('/disciplinas/sociologia')}>Sociologia</a></li>
+            <li style={{ margin: "5px 0" }}><a onClick={() => navigate('/disciplinas/quimica')}>Quimica</a></li>
+            <li style={{ margin: "5px 0" }}><a onClick={() => navigate('/disciplinas/geografia')}>Geografia</a></li>
+            <li style={{ margin: "5px 0" }}><a onClick={() => navigate('/disciplinas/filosofia')}>Filosofia</a></li>
           </ul>
         )}
         <li style={{ margin: "10px 0" }}>
