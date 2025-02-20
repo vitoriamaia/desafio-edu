@@ -1,0 +1,6 @@
+.bg-white{display: flex;
+  justify-content: center;  /* Horizontally centers the content */
+  align-items: center;}
+  .react-datepicker-wrapper{
+    width: 100%;
+  }

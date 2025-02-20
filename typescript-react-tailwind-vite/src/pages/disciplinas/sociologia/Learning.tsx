@@ -1,10 +1,14 @@
+import { LayoutSidebar } from "@/widgets";
 import { FC, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Learning: FC = () => {
+  const [cookies, removeCookie] = useCookies(['jwt']);
+  const navigate = useNavigate();
+  const [showSubjects, setShowSubjects] = useState(false);
   const location = useLocation();
   const { assunto } = location.state as { assunto: string };
-
   const [resumo, setResumo] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const LLAMA_API_URL = "http://localhost:11434/api/generate";
@@ -37,15 +41,36 @@ const Learning: FC = () => {
       setLoading(false);
     }
   };
+  const handleShowSubjects = () => {
+    setShowSubjects(!showSubjects);
+  };
+  const handleLogout = () => {
+    removeCookie('jwt', { path: '/' });
+    navigate('/Authentication/login');
+  };
 
   useEffect(() => {
     fetchResumo();
-  }, [assunto]);
+    if (!cookies.jwt) {
+      navigate('/Authentication/login');
+    }
+  },[assunto]);
+  
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Assunto: {assunto}</h1>
-      {loading ? <p>Gerando resumo...</p> : <p>{resumo}</p>}
+    <div style={{ display: "flex" }}>
+      <LayoutSidebar
+        showSubjects={showSubjects}
+        handleShowSubjects={handleShowSubjects}
+        navigate={navigate}
+        handleLogout={handleLogout}
+      />
+      <div style={{ flex: 1, padding: "20px" }}>
+        <div className="p-4">
+          <h1 className="text-2xl font-bold mb-4">Assunto: {assunto}</h1>
+          {loading ? <p>Gerando resumo...</p> : <p>{resumo}</p>}
+        </div>
+      </div>
     </div>
   );
 };

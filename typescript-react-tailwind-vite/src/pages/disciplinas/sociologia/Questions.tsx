@@ -58,27 +58,28 @@ const Questions: FC = () => {
   }, [assunto]);
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Perguntas sobre {assunto}</h2>
-      {loading ? (
-        <p>Carregando perguntas...</p>
-      ) : questions.length > 0 ? (
-        <ul className="list-disc pl-5">
-          {questions.map((q, index) => (
-            <li key={index} className="mb-4">
-              <strong>{q.question}</strong>
-              <ul className="list-none pl-2">
-                {q.options.map((option, idx) => (
-                  <li key={idx}>• {option}</li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Não foi possível carregar perguntas.</p>
-      )}
-    </div>
+    
+        <div className="p-4">
+          <h2 className="text-2xl font-bold mb-4">Perguntas sobre {assunto}</h2>
+          {loading ? (
+            <p>Carregando perguntas...</p>
+          ) : questions.length > 0 ? (
+            <ul className="list-disc pl-5">
+              {questions.map((q, index) => (
+                <li key={index} className="mb-4">
+                  <strong>{q.question}</strong>
+                  <ul className="list-none pl-2">
+                    {q.options.map((option, idx) => (
+                      <li key={idx}>• {option}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Não foi possível carregar perguntas.</p>
+          )}
+        </div>
   );
 };
 

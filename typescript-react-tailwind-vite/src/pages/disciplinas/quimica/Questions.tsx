@@ -12,6 +12,7 @@ const Questions: FC = () => {
   const { assunto } = location.state as { assunto: string };
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [selectedAnswers, setSelectedAnswers] = useState<Map<number, string>>(new Map());
 
   const LLAMA_API_URL = "http://localhost:11434/api/generate";
   const LLAMA_MODEL = "mistral";
@@ -53,6 +54,10 @@ const Questions: FC = () => {
     }
   };
 
+  const handleOptionClick = (questionIndex: number, option: string) => {
+    setSelectedAnswers((prev) => new Map(prev).set(questionIndex, option));
+  };
+
   useEffect(() => {
     fetchQuestions();
   }, [assunto]);
@@ -64,16 +69,32 @@ const Questions: FC = () => {
         <p>Carregando perguntas...</p>
       ) : questions.length > 0 ? (
         <ul className="list-disc pl-5">
-          {questions.map((q, index) => (
-            <li key={index} className="mb-4">
-              <strong>{q.question}</strong>
-              <ul className="list-none pl-2">
-                {q.options.map((option, idx) => (
-                  <li key={idx}>• {option}</li>
-                ))}
-              </ul>
-            </li>
-          ))}
+          {questions.map((q, questionIndex) => {
+            const selectedAnswer = selectedAnswers.get(questionIndex);
+            return (
+              <li key={questionIndex} className="mb-4">
+                <strong>{q.question}</strong>
+                <div className="mt-2 space-y-2">
+                  {q.options.map((option, idx) => {
+                    const isCorrect = selectedAnswer === option && option === q.correctAnswer;
+                    const isIncorrect = selectedAnswer === option && option !== q.correctAnswer;
+
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => handleOptionClick(questionIndex, option)}
+                        className={`w-full py-2 px-4 rounded border ${
+                          isCorrect ? "bg-green-500 text-white" : isIncorrect ? "bg-red-500 text-white" : "bg-gray-200"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    );
+                  })}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <p>Não foi possível carregar perguntas.</p>
