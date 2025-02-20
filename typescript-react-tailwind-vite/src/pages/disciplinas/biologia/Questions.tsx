@@ -26,7 +26,7 @@ const Questions: FC = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               model: LLAMA_MODEL,
-              prompt: `Crie uma pergunta sobre o seguinte tema de biologia: "${assunto}". O formato da resposta deve ser JSON: {"question": "Pergunta?", "options": ["A", "B", "C", "D"], "correctAnswer": "A"}.`,
+              prompt: `Crie uma pergunta sobre o seguinte tema de biologia: "${assunto}". O formato da resposta deve ser JSON, e as opcoes de resposta devem vir dentro de buttons. se a pessoa clicar na resposta certa, o button deve ficar verde: {"question": "Pergunta?", "options": ["A", "B", "C", "D"], "correctAnswer": "A"}.`,
               stream: false,
             }),
           });

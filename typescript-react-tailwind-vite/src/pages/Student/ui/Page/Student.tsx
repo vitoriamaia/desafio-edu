@@ -30,6 +30,7 @@ const Student: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [cookies, removeCookie] = useCookies(["jwt"]);
   const navigate = useNavigate();
+  const [showSubjects, setShowSubjects] = useState<boolean>(false);
 
   useEffect(() => {
     if (!cookies.jwt) {
@@ -99,13 +100,14 @@ const Student: React.FC = () => {
   return (
     <section style={{ display: "flex", minHeight: "100vh" }}>
       <LayoutSidebar
+        showSubjects={showSubjects}
+        handleShowSubjects={() => setShowSubjects(!showSubjects)}
         navigate={navigate}
         handleLogout={() => {
           removeCookie("jwt", { path: "/" });
           navigate("/Authentication/login");
-        } } showSubjects={false} handleShowSubjects={function (): void {
-          throw new Error("Function not implemented.");
-        } }      />
+        }}
+      />
       <div className="flex-1 p-6 bg-gray-100">
         <h1 className="text-4xl font-bold mb-6">Cronograma</h1>
         <h2 className="text-xl font-semibold mb-4">📌 Adicionar cronograma</h2>
@@ -194,7 +196,6 @@ const Student: React.FC = () => {
   );
 };
 
-// 🔹 Módulos do Quill (Toolbar)
 const modules: object = {
   toolbar: [
     [{ header: "1" }, { header: "2" }, { font: [] }],
@@ -208,7 +209,6 @@ const modules: object = {
   ],
 };
 
-// 🔹 Formatos Permitidos no Quill
 const formats: string[] = [
   "header",
   "font",
