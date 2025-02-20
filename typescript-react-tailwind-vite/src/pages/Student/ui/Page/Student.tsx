@@ -9,7 +9,13 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 
-// 🔹 Tipagem dos erros do formulário
+interface Cronograma {
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+}
+
 interface FormErrors {
   title?: string;
   description?: string;
@@ -19,11 +25,11 @@ interface FormErrors {
 const Student: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [cronogramas, setCronogramas] = useState<Cronograma[]>([]);
+  const [errors, setErrors] = useState<FormErrors>({});
   const [cookies, removeCookie] = useCookies(["jwt"]);
   const navigate = useNavigate();
-  const [showSubjects, setShowSubjects] = useState<boolean>(false);
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
-  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     if (!cookies.jwt) {
@@ -67,26 +73,39 @@ const Student: React.FC = () => {
 
     if (!validateForm()) return;
 
-    console.log("Título:", title);
-    console.log("Descrição:", description);
-    console.log("Data de início:", dateRange[0]?.toLocaleDateString());
-    console.log("Data de fim:", dateRange[1]?.toLocaleDateString());
+    const newCronograma: Cronograma = {
+      title,
+      description,
+      start_date: dateRange[0]?.toISOString() || "",
+      end_date: dateRange[1]?.toISOString() || "",
+    };
 
-    // Aqui você pode chamar a API para salvar os dados
+    setCronogramas([...cronogramas, newCronograma]);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setDateRange([null, null]);
+    setErrors({});
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedCronogramas = cronogramas.filter((_, i) => i !== index);
+    setCronogramas(updatedCronogramas);
   };
 
   return (
     <section style={{ display: "flex", minHeight: "100vh" }}>
       <LayoutSidebar
-        showSubjects={showSubjects}
-        handleShowSubjects={() => setShowSubjects(!showSubjects)}
         navigate={navigate}
         handleLogout={() => {
           removeCookie("jwt", { path: "/" });
           navigate("/Authentication/login");
-        }}
-      />
-
+        } } showSubjects={false} handleShowSubjects={function (): void {
+          throw new Error("Function not implemented.");
+        } }      />
       <div className="flex-1 p-6 bg-gray-100">
         <h1 className="text-4xl font-bold mb-6">Cronograma</h1>
         <h2 className="text-xl font-semibold mb-4">📌 Adicionar cronograma</h2>
@@ -124,7 +143,6 @@ const Student: React.FC = () => {
 
             {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
 
-            {/* Editor de Texto com ReactQuill */}
             <div className="editor">
               <ReactQuill
                 theme="snow"
@@ -142,6 +160,34 @@ const Student: React.FC = () => {
               Adicionar
             </button>
           </form>
+        </section>
+
+        <section className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full max-w-4xl mx-auto">
+          <h2 className="text-xl font-semibold mb-4">Cronogramas Adicionados</h2>
+          {cronogramas.length > 0 ? (
+            <ul>
+              {cronogramas.map((cronograma, index) => (
+                <li key={index} className="mb-4 p-4 bg-gray-50 border rounded-md">
+                  <h3 className="font-semibold text-lg">{cronograma.title}</h3>
+                  <p>{cronograma.description}</p>
+                  <p>
+                    <strong>Data de início:</strong> {new Date(cronograma.start_date).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Data de fim:</strong> {new Date(cronograma.end_date).toLocaleDateString()}
+                  </p>
+                  <button
+                    onClick={() => handleDelete(index)}
+                    className="mt-2 p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-200"
+                  >
+                    Deletar
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500">Nenhum cronograma adicionado.</p>
+          )}
         </section>
       </div>
     </section>

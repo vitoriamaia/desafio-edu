@@ -20,7 +20,7 @@ module Api
         if @desafio.save
           render json: { message: 'adicionado com sucesso', data: @desafio }
         else
-          render json: { message: 'erro ao adicionar', data: @desafio.errors.full_messages }
+          render json: { message: 'erro ao adicionar', data: @desafio.errors.full_messages }, status: unauthorized
         end
       end
 
