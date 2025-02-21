@@ -20,11 +20,7 @@ const Sociologia: FC = () => {
   const assuntosFundamental = ["Cultura", "Estratificação Social", "Instituições Sociais", "Movimentos Sociais", "Identidade"];
 
   const assuntosMedio = ["Teorias Sociológicas", "Globalização", "Cidadania", "Diversidade Cultural", "Desigualdade Social"];
-useEffect(() => {
-    if (!cookies.jwt) {
-      navigate('/Authentication/login');
-    }
-  }, [cookies, navigate]);
+
   const handleStart = (assunto: string) => {
     console.log(`Assunto selecionado: ${assunto}`);
     navigate("/disciplinas/sociologia/Learning", { state: { assunto } });
@@ -40,6 +36,11 @@ useEffect(() => {
     removeCookie('jwt', { path: '/' });
     navigate('/Authentication/login');
   };
+  useEffect(() => {
+    if (!cookies.jwt) {
+      navigate('/Authentication/login');
+    }
+  }, [cookies, navigate]);
 
   return (
     <div style={{ display: "flex" }}>

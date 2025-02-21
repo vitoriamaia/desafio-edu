@@ -1,14 +1,15 @@
-import { LayoutSidebar } from "@/widgets";
+import LayoutSidebar from "@/widgets/LayoutSidebar/ui/LayoutSidebar/LayoutSidebar"; // Importe o LayoutSidebar
 import { FC, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Learning: FC = () => {
-  const [cookies, removeCookie] = useCookies(['jwt']);
-  const navigate = useNavigate();
-  const [showSubjects, setShowSubjects] = useState(false);
   const location = useLocation();
+  const [cookies, removeCookie] = useCookies(["jwt"]);
+  const navigate = useNavigate();
+  const [showSubjects, setShowSubjects] = useState<boolean>(false);
   const { assunto } = location.state as { assunto: string };
+
   const [resumo, setResumo] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const LLAMA_API_URL = "http://localhost:11434/api/generate";
@@ -41,37 +42,61 @@ const Learning: FC = () => {
       setLoading(false);
     }
   };
-  const handleShowSubjects = () => {
-    setShowSubjects(!showSubjects);
-  };
-  const handleLogout = () => {
-    removeCookie('jwt', { path: '/' });
-    navigate('/Authentication/login');
-  };
 
   useEffect(() => {
     fetchResumo();
-    if (!cookies.jwt) {
-      navigate('/Authentication/login');
-    }
-  },[assunto]);
-  
+  }, [assunto]);
 
   return (
-    <div style={{ display: "flex" }}>
+    <section style={{ display: "flex", minHeight: "100vh" }}>
       <LayoutSidebar
-        showSubjects={showSubjects}
-        handleShowSubjects={handleShowSubjects}
-        navigate={navigate}
-        handleLogout={handleLogout}
+        showSubjects={showSubjects} 
+        handleShowSubjects={() => setShowSubjects(!showSubjects)}
+        navigate={() => { navigate }}
+        handleLogout={() => {
+          removeCookie("jwt", { path: "/" });
+          navigate("/Authentication/login");
+        }}
       />
-      <div style={{ flex: 1, padding: "20px" }}>
-        <div className="p-4">
-          <h1 className="text-2xl font-bold mb-4">Assunto: {assunto}</h1>
-          {loading ? <p>Gerando resumo...</p> : <p>{resumo}</p>}
+      <div className="flex-1 p-6 bg-gray-100">
+        <div className="max-w-3xl mx-auto rounded-lg shadow-lg overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
+            <h1 className="text-3xl font-semibold text-white text-center">
+               {assunto}
+            </h1>
+          </div>
+          
+        </div>
+        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="p-6">
+            {loading ? (
+              <div className="flex justify-center items-center mt-4">
+                <svg
+                  className="animate-spin h-10 w-10 text-blue-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" strokeWidth="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="none"
+                    strokeWidth="4"
+                    d="M4 12a8 8 0 0116 0"
+                  ></path>
+                </svg>
+                <p className="ml-4 text-gray-600">Gerando resumo...</p>
+              </div>
+            ) : (
+              <div className="mt-4">
+                <p className="text-gray-700 text-lg leading-relaxed">{resumo}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

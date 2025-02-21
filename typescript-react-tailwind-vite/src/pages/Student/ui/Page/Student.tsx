@@ -37,6 +37,7 @@ const Student: React.FC = () => {
       navigate("/Authentication/login");
     }
   }, [cookies, navigate]);
+  
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
